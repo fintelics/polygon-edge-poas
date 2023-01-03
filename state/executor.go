@@ -467,6 +467,15 @@ func (t *Transition) apply(msg *types.Transaction) (*runtime.ExecutionResult, er
 	t.ctx.GasPrice = types.BytesToHash(gasPrice.Bytes())
 	t.ctx.Origin = msg.From
 
+	// If the gas fee is less than 1/10000 of the value
+	// At this point it is confirmed that there's more gas in the gas fee 
+	// If the supposed the transaction fee is higher than gas fee, revert the gas fee and deduct it from the value sending
+	transactionFee := new(big.Int).Div(new(big.Int).SetUint64(value), 10000)
+	if transactionFee > intrinsicGasCost{
+		value = value - transactionFee
+		gasLeft = msg.Gas
+	}
+
 	var result *runtime.ExecutionResult
 	if msg.IsContractCreation() {
 		result = t.Create2(msg.From, msg.Input, value, gasLeft)
@@ -481,6 +490,8 @@ func (t *Transition) apply(msg *types.Transaction) (*runtime.ExecutionResult, er
 	if t.ctx.Tracer != nil {
 		t.ctx.Tracer.TxEnd(result.GasLeft)
 	}
+
+
 
 	// refund the sender
 	remaining := new(big.Int).Mul(new(big.Int).SetUint64(result.GasLeft), gasPrice)
