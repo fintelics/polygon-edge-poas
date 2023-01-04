@@ -494,17 +494,28 @@ func (t *Transition) apply(msg *types.Transaction) (*runtime.ExecutionResult, er
 		t.ctx.Tracer.TxEnd(result.GasLeft)
 	}
 
-	// refund the sender
-	remaining := new(big.Int).Mul(new(big.Int).SetUint64(result.GasLeft), gasPrice)
-	txn.AddBalance(msg.From, remaining)
+	if transactionFee.Cmp(gasCostEstimate) > 0 {
+		// refund the sender
+		remaining := new(big.Int).Mul(msg.Gas, gasPrice)
+		txn.AddBalance(msg.From, remaining)
 
-	// pay the coinbase
-	coinbaseFee := new(big.Int).Mul(new(big.Int).SetUint64(result.GasUsed), gasPrice)
-	txn.AddBalance(t.ctx.Coinbase, coinbaseFee)
+		// pay the coinbase
+		txn.AddBalance(t.ctx.Coinbase, transactionFee)
 
-	// return gas to the pool
-	t.addGasPool(result.GasLeft)
+		// return gas to the pool
+		t.addGasPool(result.GasLeft)
+	} else {
+		// refund the sender
+		remaining := new(big.Int).Mul(new(big.Int).SetUint64(result.GasLeft), gasPrice)
+		txn.AddBalance(msg.From, remaining)
 
+		// pay the coinbase
+		coinbaseFee := new(big.Int).Mul(new(big.Int).SetUint64(result.GasUsed), gasPrice)
+		txn.AddBalance(t.ctx.Coinbase, coinbaseFee)
+
+		// return gas to the pool
+		t.addGasPool(result.GasLeft)
+	}
 	return result, nil
 }
 
