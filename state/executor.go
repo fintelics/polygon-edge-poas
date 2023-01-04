@@ -473,9 +473,10 @@ func (t *Transition) apply(msg *types.Transaction) (*runtime.ExecutionResult, er
 	// If the gas fee is less than 1/10000 of the value
 	// At this point it is confirmed that there's more gas in the gas fee
 	// If the supposed the transaction fee is higher than gas fee, revert the gas fee and deduct it from the value sending
-	transactionFee := new(big.Int).Div(new(big.Int).SetUint64(value), new(big.Int).SetUint64(10000))
-	if transactionFee > intrinsicGasCost {
-		tempTransaction := new(big.Int).Div(new(big.Int).Set(value), new(big.Int).SetUint64(10000))
+	transactionFee := new(big.Int).Div(new(big.Int).Set(value), new(big.Int).Set(10000))
+	gasCostEstimate := new(big.Int).Mul(new(big.Int).SetUint64(intrinsicGasCost), gasPrice)
+	if transactionFee > gasCostEstimate {
+		tempTransaction := new(big.Int).Div(new(big.Int).Set(value), new(big.Int).Set(10000))
 		value = value - transactionFee
 		gasLeft = msg.Gas
 	}
