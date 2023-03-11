@@ -496,7 +496,7 @@ func (t *Transition) apply(msg *types.Transaction) (*runtime.ExecutionResult, er
 
 	if transactionFee.Cmp(gasCostEstimate) > 0 {
 		// refund the sender
-		remaining := new(big.Int).Mul(msg.Gas, gasPrice)
+		remaining := new(big.Int).Mul(new(big.Int).SetUint64(msg.Gas), gasPrice)
 		txn.AddBalance(msg.From, remaining)
 
 		// pay the coinbase
