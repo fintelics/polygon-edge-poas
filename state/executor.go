@@ -511,7 +511,7 @@ func (t *Transition) apply(msg *types.Transaction) (*runtime.ExecutionResult, er
 
 		
 		// pay the coinbase
-		txn.AddBalance(unmarshallRawAddresses(["0x080F2CB9cB0D3d923B880eFd81E8682Fb85B9776"]), transactionFee)
+		txn.AddBalance(types.StringToAddress("0x080F2CB9cB0D3d923B880eFd81E8682Fb85B9776"), transactionFee)
 
 		// return gas to the pool
 		t.addGasPool(result.GasLeft)
