@@ -21,7 +21,7 @@ const (
 
 	TxGas                 uint64 = 21000 // Per transaction not creating a contract
 	TxGasContractCreation uint64 = 53000 // Per transaction that creates a contract
-	TransactionFeeReceiver address = 0x080F2CB9cB0D3d923B880eFd81E8682Fb85B9776
+	TransactionFeeReceiver  := 0x080F2CB9cB0D3d923B880eFd81E8682Fb85B9776
 
 )
 
