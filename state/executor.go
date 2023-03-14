@@ -827,7 +827,7 @@ func (t *Transition) SetTracer(tracer tracer.Tracer) {
 
 // GetTracer returns a tracer in context
 func (t *Transition) GetTracer() runtime.VMTracer {
-	return t.ctx.Tracer 
+	return t.ctx.Tracer
 }
 
 func (t *Transition) GetRefund() uint64 {
