@@ -26,7 +26,7 @@ const (
 var emptyCodeHashTwo = types.BytesToHash(crypto.Keccak256(nil))
 
 // GetHashByNumber returns the hash function of a block number
-type GetHashByNumber = func(i uint64) types.Hash
+type GetHashByNumber = func(i uint64) types.Hash 
 
 type GetHashByNumberHelper = func(*types.Header) GetHashByNumber
 
