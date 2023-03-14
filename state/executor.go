@@ -49,6 +49,15 @@ func NewExecutor(config *chain.Params, s State, logger hclog.Logger) *Executor {
 		state:  s,
 	}
 }
+func unmarshallRawAddresses(addresses []string) []types.Address {
+	marshalledAddresses := make([]types.Address, len(addresses))
+
+	for indx, address := range addresses {
+		marshalledAddresses[indx] = types.StringToAddress(address)
+	}
+
+	return marshalledAddresses
+}
 
 func (e *Executor) WriteGenesis(alloc map[types.Address]*chain.GenesisAccount) types.Hash {
 	snap := e.state.NewSnapshot()
