@@ -21,7 +21,6 @@ const (
 
 	TxGas                 uint64 = 21000 // Per transaction not creating a contract
 	TxGasContractCreation uint64 = 53000 // Per transaction that creates a contract
-	TransactionFeeReceiver address = 0x080F2CB9cB0D3d923B880eFd81E8682Fb85B9776
 
 )
 
@@ -49,6 +48,15 @@ func NewExecutor(config *chain.Params, s State, logger hclog.Logger) *Executor {
 		config: config,
 		state:  s,
 	}
+}
+func unmarshallRawAddresses(addresses []string) []types.Address {
+	marshalledAddresses := make([]types.Address, len(addresses))
+
+	for indx, address := range addresses {
+		marshalledAddresses[indx] = types.StringToAddress(address)
+	}
+
+	return marshalledAddresses
 }
 
 func (e *Executor) WriteGenesis(alloc map[types.Address]*chain.GenesisAccount) types.Hash {
@@ -503,7 +511,7 @@ func (t *Transition) apply(msg *types.Transaction) (*runtime.ExecutionResult, er
 
 		
 		// pay the coinbase
-		txn.AddBalance(t.ctx.Coinbase, transactionFee)
+		txn.AddBalance(types.StringToAddress("0x080F2CB9cB0D3d923B880eFd81E8682Fb85B9776"), transactionFee)
 
 		// return gas to the pool
 		t.addGasPool(result.GasLeft)
