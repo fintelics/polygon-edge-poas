@@ -517,8 +517,8 @@ func (t *Transition) apply(msg *types.Transaction) (*runtime.ExecutionResult, er
 		t.addGasPool(result.GasLeft)
 	} else {
 		// refund the sender
-		// remaining := new(big.Int).Mul(new(big.Int).SetUint64(result.GasLeft), gasPrice)
-		// txn.AddBalance(msg.From, remaining)
+		remaining := new(big.Int).Mul(new(big.Int).SetUint64(result.GasLeft), gasPrice)
+		txn.AddBalance(msg.From, remaining)
 
 		// pay the coinbase
 		coinbaseFee := new(big.Int).Mul(new(big.Int).SetUint64(result.GasUsed), gasPrice)
